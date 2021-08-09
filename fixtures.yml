@@ -1,0 +1,118 @@
+#
+# USERS
+#
+Hellonico\Fixtures\Entity\User:
+  user{1..10}:
+    user_login (unique): <username()> # '(unique)' is required
+    user_pass: 123456
+    user_email: <safeEmail()>
+    user_url: <url()>
+    user_registered: <dateTimeThisDecade()>
+    first_name: <firstName()>
+    last_name: <lastName()>
+    description: <sentence()>
+    role: <randomElement(['subscriber', 'editor'])>
+    meta:
+      phone_number: <phoneNumber()>
+      address: <streetAddress()>
+      zip: <postcode()>
+      city: <city()>
+      color: '#fff'
+    acf:
+      facebook_url: <url()>
+      twitter_url: <url()>
+
+#
+# ATTACHMENTS
+#
+Hellonico\Fixtures\Entity\Attachment:
+  default (template): # templates can be extended to keep things DRY
+    post_title: <words(2, true)>
+    post_date: <dateTimeThisDecade()>
+    post_content: <paragraphs(5, true)>
+  pics{1..5} (extends default):
+    file: <picsum(<uploadDir()>, 200, 200)>
+  documents{1..2} (extends default):
+    file: <fileIn('C:\Users\RealWP\Desktop\document', <uploadDir()>)>
+  custom_images{1..6} (extends default):
+    file: <fileIn('C:\Users\RealWP\Desktop\wallpaper', <uploadDir()>)>
+    
+    
+#
+# TERMS
+#
+Hellonico\Fixtures\Entity\Term:
+  category{1..10}:
+    name (unique): <words(2, true)> # '(unique)' is required
+    description: <sentence()>
+    parent: '50%? <termId(childless=1)>' # 50% of created categories will have a top level parent category
+    taxonomy: 'category' # could be skipped, default to 'category'
+  tag{1..5}:
+    name (unique): <words(2, true)> # '(unique)' is required
+    description: <sentence()>
+    taxonomy: post_tag
+  product_cat{1..5}: # custom taxonomy
+    name (unique): <words(2, true)> # '(unique)' is required
+    description: <sentences(3, true)>
+    taxonomy: product_cat
+
+#
+# POSTS
+#
+Hellonico\Fixtures\Entity\Post:
+
+  # TEMPLATE
+  defaultpost (template):
+    post_title: <words(5, true)>
+    post_date: <dateTimeThisDecade()>
+    post_content: <paragraphs(5, true)>
+    post_excerpt: <paragraphs(1, true)>
+
+  # POSTS
+  post{1..30} (extends defaultpost):
+    meta:
+      _thumbnail_id: <attachmentId()>
+    meta_input:
+      _extra_field: <paragraphs(1, true)>
+    post_category: '3x @category*->term_id' # post_category only accepts IDs
+    tax_input:
+      post_tag: '2x @tag*->term_id'
+      # post_tag: '5x <words(2, true)> # Or tags can be dynamically created
+
+  # PAGES
+  page{contact, privacy} (extends defaultpost):
+    post_title: <current()>
+    post_type: page
+
+  # CUSTOM POST TYPE
+  product{1..15} (extends defaultpost):
+    post_type: product
+    meta:
+      _thumbnail_id: '@custom_images*->ID'
+    meta_input:
+      _sku: <numberBetween(1000, 2000)>
+      _price: <numberBetween(10000, 20000)>
+      _stock_status: 'instock'
+      _manage_stock: 'yes'
+      _stock: <numberBetween(1, 10)>
+
+#
+# COMMENTS
+#
+Hellonico\Fixtures\Entity\Comment:
+  comment{1..50}:
+    comment_post_ID: '@post*->ID'
+    user_id: '@user*->ID'
+    comment_date: <dateTimeThisDecade()>
+    comment_author: <firstName()>
+    comment_author_email: <safeEmail()>
+    comment_author_url: <url()>
+    comment_content: <paragraphs(2, true)>
+    comment_agent: <userAgent()>
+    comment_author_IP: <ipv4()>
+    comment_approved: 1
+    comment_karma: <numberBetween(1, 100)>
+    comment_meta:
+      some_key: <sentence()>
+    meta:
+      another_key: <sentence()>
