@@ -105,7 +105,7 @@ Hellonico\Fixtures\Entity\Comment:
     user_id: '@user*->ID'
     comment_date: <dateTimeThisDecade()>
     comment_author: <firstName()>
-    comment_author_email: <safeEmail()>
+    comment_author_email: <freeEmail()>
     comment_author_url: <url()>
     comment_content: <paragraphs(2, true)>
     comment_agent: <userAgent()>
