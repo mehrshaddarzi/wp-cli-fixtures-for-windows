@@ -5,7 +5,7 @@ Hellonico\Fixtures\Entity\User:
   user{1..10}:
     user_login (unique): <username()> # '(unique)' is required
     user_pass: 123456
-    user_email: <safeEmail()>
+    user_email: <freeEmail()>
     user_url: <url()>
     user_registered: <dateTimeThisDecade()>
     first_name: <firstName()>
